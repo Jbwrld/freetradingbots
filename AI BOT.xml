@@ -1,30 +1,38 @@
+
 <xml xmlns="https://developers.google.com/blockly/xml" is_dbot="true" collection="false">
   <variables>
-    <variable id="%w)b[:t0iEA{Kzy$1[P9">currentPrediction</variable>
-    <variable id=";h?C)H/tmAqNwKqb=^ov">predictionList</variable>
-    <variable id="rP]rJTAeSthDOPA8=l%8">Stake</variable>
+    <variable id="initialStake">Initial Stake</variable>
+    <variable id="stake">Stake</variable>
+    <variable id="martingaleFactor">Martingale Factor</variable>
+    <variable id="profit">Profit</variable>
+    <variable id="targetProfit">Target Profit</variable>
+    <variable id="stopLoss">Stop Loss</variable>
+    <variable id="differsDigit">Differs Digit</variable>
+    <variable id="lastDigitStats">Last Digit Stats</variable>
+    <variable id="leastFrequentDigit">Least Frequent Digit</variable>
+    <variable id="tradeCount">Trade Count</variable>
   </variables>
-  <block type="trade_definition" id="z=4kgdlcr7U,tXY36$]P" deletable="false" x="0" y="60">
+  <block type="trade_definition" id="tradeDef" deletable="false" x="0" y="0">
     <statement name="TRADE_OPTIONS">
-      <block type="trade_definition_market" id="]vbpi4]x$86xV[/QFQ6z" deletable="false" movable="false">
+      <block type="trade_definition_market" id="marketDef" deletable="false" movable="false">
         <field name="MARKET_LIST">synthetic_index</field>
         <field name="SUBMARKET_LIST">random_index</field>
-        <field name="SYMBOL_LIST">1HZ100V</field>
+        <field name="SYMBOL_LIST">R_10</field>
         <next>
-          <block type="trade_definition_tradetype" id="{0qW{nzd[jD/$!8vT!ke" deletable="false" movable="false">
+          <block type="trade_definition_tradetype" id="tradeTypeDef" deletable="false" movable="false">
             <field name="TRADETYPECAT_LIST">digits</field>
-            <field name="TRADETYPE_LIST">overunder</field>
+            <field name="TRADETYPE_LIST">matchesdiffers</field>
             <next>
-              <block type="trade_definition_contracttype" id="%{Xq-7FCsDW:z~0)1$UV" deletable="false" movable="false">
-                <field name="TYPE_LIST">both</field>
+              <block type="trade_definition_contracttype" id="contractTypeDef" deletable="false" movable="false">
+                <field name="TYPE_LIST">differ</field>
                 <next>
-                  <block type="trade_definition_candleinterval" id="]-51hCH90Bce~c?GF!mn" deletable="false" movable="false">
+                  <block type="trade_definition_candleinterval" id="candleDef" deletable="false" movable="false">
                     <field name="CANDLEINTERVAL_LIST">60</field>
                     <next>
-                      <block type="trade_definition_restartbuysell" id=".$y}be{/Lo([!J^?:V;3" deletable="false" movable="false">
+                      <block type="trade_definition_restartbuysell" id="restartBuySellDef" deletable="false" movable="false">
                         <field name="TIME_MACHINE_ENABLED">FALSE</field>
                         <next>
-                          <block type="trade_definition_restartonerror" id="!d^WIMK-raR~)^=zk!@~" deletable="false" movable="false">
+                          <block type="trade_definition_restartonerror" id="restartOnErrorDef" deletable="false" movable="false">
                             <field name="RESTARTONERROR">TRUE</field>
                           </block>
                         </next>
@@ -39,57 +47,89 @@
       </block>
     </statement>
     <statement name="INITIALIZATION">
-      <block type="text_print" id="p/.,vRPU$1XGgf@o1^VV">
-        <value name="TEXT">
-          <shadow type="text" id="v~45]l*2c_(f-m=RQs@5">
-            <field name="TEXT">Make mentors Broke </field>
-          </shadow>
+      <block type="variables_set" id="setInitialStake">
+        <field name="VAR" id="initialStake">Initial Stake</field>
+        <value name="VALUE">
+          <block type="math_number" id="initialStakeValue">
+            <field name="NUM">1</field>
+          </block>
         </value>
         <next>
-          <block type="lists_create_with" id="4ha4x,Fv:ImACq_]|1V_">
-            <field name="VARIABLE" id=";h?C)H/tmAqNwKqb=^ov">predictionList</field>
-            <statement name="STACK">
-              <block type="lists_statement" id="RwhGv2psOyyOv1VJ38wA" movable="false">
+          <block type="variables_set" id="setStake">
+            <field name="VAR" id="stake">Stake</field>
+            <value name="VALUE">
+              <block type="variables_get" id="getStakeInitial">
+                <field name="VAR" id="initialStake">Initial Stake</field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set" id="setMartingaleFactor">
+                <field name="VAR" id="martingaleFactor">Martingale Factor</field>
                 <value name="VALUE">
-                  <block type="math_number" id="xH;ut4*?P!/Sde7gXKF=">
-                    <field name="NUM">0</field>
+                  <block type="math_number" id="martingaleFactorValue">
+                    <field name="NUM">1.5</field>
                   </block>
                 </value>
                 <next>
-                  <block type="lists_statement" id="Tv5hlz7nT{k?}=l*qrDg" movable="false">
+                  <block type="variables_set" id="setProfitInitial">
+                    <field name="VAR" id="profit">Profit</field>
                     <value name="VALUE">
-                      <block type="math_number" id="p/9{L]sC@wW_Bze(^N:@">
-                        <field name="NUM">4</field>
+                      <block type="math_number" id="profitInitialValue">
+                        <field name="NUM">0</field>
                       </block>
                     </value>
                     <next>
-                      <block type="lists_statement" id="oMS1j}|Nhhsl#H{C=o-A" movable="false">
+                      <block type="variables_set" id="setTargetProfit">
+                        <field name="VAR" id="targetProfit">Target Profit</field>
                         <value name="VALUE">
-                          <block type="math_number" id="HjUFtrLFy|U[Lv]{cC|f">
+                          <block type="math_number" id="targetProfitValue">
                             <field name="NUM">5</field>
                           </block>
                         </value>
                         <next>
-                          <block type="lists_statement" id="#8J8Yd.j5T(rX9c5y**b" movable="false">
+                          <block type="variables_set" id="setStopLoss">
+                            <field name="VAR" id="stopLoss">Stop Loss</field>
                             <value name="VALUE">
-                              <block type="math_number" id="*~c?)`A4d#u$%HoIX2P1">
-                                <field name="NUM">6</field>
+                              <block type="math_number" id="stopLossValue">
+                                <field name="NUM">10</field>
                               </block>
                             </value>
                             <next>
-                              <block type="lists_statement" id="|[@!]8(!53cP;BT{nu3X" movable="false">
+                              <block type="variables_set" id="setTradeCountInitial">
+                                <field name="VAR" id="tradeCount">Trade Count</field>
                                 <value name="VALUE">
-                                  <block type="math_number" id="2{nnefi7!.r*PAQs$XJR">
-                                    <field name="NUM">7</field>
+                                  <block type="math_number" id="tradeCountInitialValue">
+                                    <field name="NUM">0</field>
                                   </block>
                                 </value>
                                 <next>
-                                  <block type="lists_statement" id="^^_8k`iFtD*gfUG)i!5u" movable="false">
-                                    <value name="VALUE">
-                                      <block type="math_number" id="ZwyzNh{KG2RhtI^OVHfg">
-                                        <field name="NUM">8</field>
-                                      </block>
+                                  <block type="text_print" id="initialMessage">
+                                    <value name="TEXT">
+                                      <shadow type="text" id="initialMessageText">
+                                        <field name="TEXT">Smart Recovery on Differs Bot Started!</field>
+                                      </shadow>
                                     </value>
+                                    <next>
+                                      <block type="request_api" id="getInitialStats">
+                                        <mutation xmlns="http://www.w3.org/1999/xhtml" method="get"></mutation>
+                                        <field name="API_URL">https://api.deriv.com/api/v2/bot/last_digit_stats?count=100&amp;ticks=1&amp;symbol=R_10</field>
+                                        <field name="HEADERS">{}</field>
+                                        <field name="BODY">{}</field>
+                                        <statement name="ONSUCCESS">
+                                          <block type="variables_set" id="setLastDigitStatsInitial">
+                                            <field name="VAR" id="lastDigitStats">Last Digit Stats</field>
+                                            <value name="VALUE">
+                                              <block type="api_response" id="apiResponseInitial"></block>
+                                            </value>
+                                            <next>
+                                              <block type="procedures_callnoreturn" id="findLeastFrequentInitial">
+                                                <mutation name="findLeastFrequentDigit"></mutation>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </statement>
+                                      </block>
+                                    </next>
                                   </block>
                                 </next>
                               </block>
@@ -101,15 +141,317 @@
                   </block>
                 </next>
               </block>
-            </statement>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="SUBMARKET">
+      <block type="trade_definition_tradeoptions" id="tradeOptions">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="false" has_second_barrier="false" has_prediction="true"></mutation>
+        <field name="DURATIONTYPE_LIST">t</field>
+        <value name="DURATION">
+          <block type="math_number" id="durationValue">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <value name="AMOUNT">
+          <block type="variables_get" id="getStakeForTrade">
+            <field name="VAR" id="stake">Stake</field>
+          </block>
+        </value>
+        <value name="PREDICTION">
+          <shadow type="math_number" id="predictionShadow">
+            <field name="NUM">0</field>
+          </shadow>
+          <block type="variables_get" id="getDiffersDigit">
+            <field name="VAR" id="differsDigit">Differs Digit</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="during_purchase" id="duringPurchase" collapsed="true" x="0" y="888"></block>
+  <block type="after_purchase" id="afterPurchase" x="0" y="978">
+    <statement name="AFTERPURCHASE_STACK">
+      <block type="controls_if" id="checkWin">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+        <value name="IF0">
+          <block type="contract_check_result" id="isWin">
+            <field name="CHECK_RESULT">win</field>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="math_change" id="profitChangeWin">
+            <field name="VAR" id="profit">Profit</field>
+            <value name="DELTA">
+              <block type="read_details" id="winAmount">
+                <field name="DETAIL_INDEX">4</field>
+              </block>
+            </value>
             <next>
-              <block type="variables_set" id="(rxlO-s8zdAkJ#3J3Jym">
-                <field name="VAR" id="rP]rJTAeSthDOPA8=l%8">Stake</field>
+              <block type="variables_set" id="resetStakeAfterWin">
+                <field name="VAR" id="stake">Stake</field>
                 <value name="VALUE">
-                  <block type="math_number" id="W;;6_|zZlUKq=KQ`o?P[">
-                    <field name="NUM">4</field>
+                  <block type="variables_get" id="getInitialStakeAfterWin">
+                    <field name="VAR" id="initialStake">Initial Stake</field>
                   </block>
                 </value>
+                <next>
+                  <block type="math_change" id="incrementTradeCountWin">
+                    <field name="VAR" id="tradeCount">Trade Count</field>
+                    <value name="DELTA">
+                      <block type="math_number" id="incrementWinValue">
+                        <field name="NUM">1</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="controls_if" id="checkProfitAfterWin">
+                        <value name="IF0">
+                          <block type="math_number_compare" id="isTargetReachedAfterWin">
+                            <field name="OP">GTE</field>
+                            <value name="A">
+                              <block type="variables_get" id="getCurrentProfitAfterWin">
+                                <field name="VAR" id="profit">Profit</field>
+                              </block>
+                            </value>
+                            <value name="B">
+                              <block type="variables_get" id="getTargetProfitAfterWin">
+                                <field name="VAR" id="targetProfit">Target Profit</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <statement name="DO0">
+                          <block type="notify" id="notifyTargetProfit">
+                            <field name="NOTIFICATION_TYPE">success</field>
+                            <field name="NOTIFICATION_SOUND">silent</field>
+                            <value name="MESSAGE">
+                              <block type="text_join" id="textTargetProfitReached">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+                                <value name="ADD0">
+                                  <block type="text" id="textTargetProfitMsg">
+                                    <field name="TEXT">Target Profit Reached: Profit = </field>
+                                  </block>
+                                </value>
+                                <value name="ADD1">
+                                  <block type="variables_get" id="getCurrentProfitForTargetMsg">
+                                    <field name="VAR" id="profit">Profit</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="controls_break" id="breakTargetProfit"></block>
+                            </next>
+                          </block>
+                        </statement>
+                        <next>
+                          <block type="controls_if" id="checkTradesForReanalysisWin">
+                            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+                            <value name="IF0">
+                              <block type="math_arithmetic" id="modTradesWin">
+                                <field name="OP">MOD</field>
+                                <value name="A">
+                                  <block type="variables_get" id="getTradeCountForReanalysisWin">
+                                    <field name="VAR" id="tradeCount">Trade Count</field>
+                                  </block>
+                                </value>
+                                <value name="B">
+                                  <block type="math_number" id="reanalysisIntervalWin">
+                                    <field name="NUM">5</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <statement name="DO0">
+                              <block type="request_api" id="getStatsAfterWin">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" method="get"></mutation>
+                                <field name="API_URL">https://api.deriv.com/api/v2/bot/last_digit_stats?count=100&amp;ticks=1&amp;symbol=R_10</field>
+                                <field name="HEADERS">{}</field>
+                                <field name="BODY">{}</field>
+                                <statement name="ONSUCCESS">
+                                  <block type="variables_set" id="setLastDigitStatsAfterWin">
+                                    <field name="VAR" id="lastDigitStats">Last Digit Stats</field>
+                                    <value name="VALUE">
+                                      <block type="api_response" id="apiResponseAfterWin"></block>
+                                    </value>
+                                    <next>
+                                      <block type="procedures_callnoreturn" id="findLeastFrequentAfterWin">
+                                        <mutation name="findLeastFrequentDigit"></mutation>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </statement>
+                              </block>
+                            </statement>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <statement name="ELSE">
+          <block type="math_change" id="profitChangeLoss">
+            <field name="VAR" id="profit">Profit</field>
+            <value name="DELTA">
+              <block type="math_arithmetic" id="lossAmount">
+                <field name="OP">MINUS</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </statement>
+                          </block>
+                        </xml>
+<xml xmlns="https://developers.google.com/blockly/xml" is_dbot="true" collection="false">
+  <variables>
+    <variable id="initialStake">Initial Stake</variable>
+    <variable id="stake">Stake</variable>
+    <variable id="martingaleFactor">Martingale Factor</variable>
+    <variable id="profit">Profit</variable>
+    <variable id="targetProfit">Target Profit</variable>
+    <variable id="stopLoss">Stop Loss</variable>
+    <variable id="differsDigit">Differs Digit</variable>
+    <variable id="lastDigitStats">Last Digit Stats</variable>
+    <variable id="leastFrequentDigit">Least Frequent Digit</variable>
+    <variable id="tradeCount">Trade Count</variable>
+  </variables>
+  <block type="trade_definition" id="tradeDef" deletable="false" x="0" y="0">
+    <statement name="TRADE_OPTIONS">
+      <block type="trade_definition_market" id="marketDef" deletable="false" movable="false">
+        <field name="MARKET_LIST">synthetic_index</field>
+        <field name="SUBMARKET_LIST">random_index</field>
+        <field name="SYMBOL_LIST">R_10</field>
+        <next>
+          <block type="trade_definition_tradetype" id="tradeTypeDef" deletable="false" movable="false">
+            <field name="TRADETYPECAT_LIST">digits</field>
+            <field name="TRADETYPE_LIST">matchesdiffers</field>
+            <next>
+              <block type="trade_definition_contracttype" id="contractTypeDef" deletable="false" movable="false">
+                <field name="TYPE_LIST">differ</field>
+                <next>
+                  <block type="trade_definition_candleinterval" id="candleDef" deletable="false" movable="false">
+                    <field name="CANDLEINTERVAL_LIST">60</field>
+                    <next>
+                      <block type="trade_definition_restartbuysell" id="restartBuySellDef" deletable="false" movable="false">
+                        <field name="TIME_MACHINE_ENABLED">FALSE</field>
+                        <next>
+                          <block type="trade_definition_restartonerror" id="restartOnErrorDef" deletable="false" movable="false">
+                            <field name="RESTARTONERROR">TRUE</field>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="INITIALIZATION">
+      <block type="variables_set" id="setInitialStake">
+        <field name="VAR" id="initialStake">Initial Stake</field>
+        <value name="VALUE">
+          <block type="math_number" id="initialStakeValue">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set" id="setStake">
+            <field name="VAR" id="stake">Stake</field>
+            <value name="VALUE">
+              <block type="variables_get" id="getStakeInitial">
+                <field name="VAR" id="initialStake">Initial Stake</field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set" id="setMartingaleFactor">
+                <field name="VAR" id="martingaleFactor">Martingale Factor</field>
+                <value name="VALUE">
+                  <block type="math_number" id="martingaleFactorValue">
+                    <field name="NUM">1.5</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="variables_set" id="setProfitInitial">
+                    <field name="VAR" id="profit">Profit</field>
+                    <value name="VALUE">
+                      <block type="math_number" id="profitInitialValue">
+                        <field name="NUM">0</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="variables_set" id="setTargetProfit">
+                        <field name="VAR" id="targetProfit">Target Profit</field>
+                        <value name="VALUE">
+                          <block type="math_number" id="targetProfitValue">
+                            <field name="NUM">5</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="variables_set" id="setStopLoss">
+                            <field name="VAR" id="stopLoss">Stop Loss</field>
+                            <value name="VALUE">
+                              <block type="math_number" id="stopLossValue">
+                                <field name="NUM">10</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="variables_set" id="setTradeCountInitial">
+                                <field name="VAR" id="tradeCount">Trade Count</field>
+                                <value name="VALUE">
+                                  <block type="math_number" id="tradeCountInitialValue">
+                                    <field name="NUM">0</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="text_print" id="initialMessage">
+                                    <value name="TEXT">
+                                      <shadow type="text" id="initialMessageText">
+                                        <field name="TEXT">Smart Recovery on Differs Bot Started!</field>
+                                      </shadow>
+                                    </value>
+                                    <next>
+                                      <block type="request_api" id="getInitialStats">
+                                        <mutation xmlns="http://www.w3.org/1999/xhtml" method="get"></mutation>
+                                        <field name="API_URL">https://api.deriv.com/api/v2/bot/last_digit_stats?count=100&amp;ticks=1&amp;symbol=R_10</field>
+                                        <field name="HEADERS">{}</field>
+                                        <field name="BODY">{}</field>
+                                        <statement name="ONSUCCESS">
+                                          <block type="variables_set" id="setLastDigitStatsInitial">
+                                            <field name="VAR" id="lastDigitStats">Last Digit Stats</field>
+                                            <value name="VALUE">
+                                              <block type="api_response" id="apiResponseInitial"></block>
+                                            </value>
+                                            <next>
+                                              <block type="procedures_callnoreturn" id="findLeastFrequentInitial">
+                                                <mutation name="findLeastFrequentDigit"></mutation>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </statement>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
               </block>
             </next>
           </block>
@@ -117,93 +459,167 @@
       </block>
     </statement>
     <statement name="SUBMARKET">
-      <block type="math_change" id="E==7~)BZm5:ZQ6c5Df;1">
-        <field name="VAR" id="%w)b[:t0iEA{Kzy$1[P9">currentPrediction</field>
-        <value name="DELTA">
-          <shadow type="math_number" id="R#|wl)#*|K4Vt-b];4t[">
+      <block type="trade_definition_tradeoptions" id="tradeOptions">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="false" has_second_barrier="false" has_prediction="true"></mutation>
+        <field name="DURATIONTYPE_LIST">t</field>
+        <value name="DURATION">
+          <block type="math_number" id="durationValue">
             <field name="NUM">1</field>
-          </shadow>
-        </value>
-        <next>
-          <block type="trade_definition_tradeoptions" id="8!MPM@_Y!(*EXABIfB3+">
-            <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="false" has_second_barrier="false" has_prediction="true"></mutation>
-            <field name="DURATIONTYPE_LIST">t</field>
-            <value name="DURATION">
-              <shadow type="math_number_positive" id="~c}#w6[y,Fs.dQzi3^*;">
-                <field name="NUM">1</field>
-              </shadow>
-            </value>
-            <value name="AMOUNT">
-              <shadow type="math_number_positive" id="uh6{l()EMH]@@CCOgL,I">
-                <field name="NUM">1</field>
-              </shadow>
-              <block type="variables_get" id="`gLDtQw?P}@BFB:k3Hg3">
-                <field name="VAR" id="rP]rJTAeSthDOPA8=l%8">Stake</field>
-              </block>
-            </value>
-            <value name="PREDICTION">
-              <shadow type="math_number_positive" id="GwJs(P8~4!M6$lQrg!!-" inline="true">
-                <field name="NUM">1</field>
-              </shadow>
-              <block type="lists_getIndex" id="fzTWA[xd;iD}Ol|EI-K}">
-                <mutation xmlns="http://www.w3.org/1999/xhtml" statement="false" at="true"></mutation>
-                <field name="MODE">GET</field>
-                <field name="WHERE">FROM_START</field>
-                <value name="VALUE">
-                  <block type="variables_get" id="I3nGV{G,x3gd5,x-K:AH">
-                    <field name="VAR" id=";h?C)H/tmAqNwKqb=^ov">predictionList</field>
-                  </block>
-                </value>
-                <value name="AT">
-                  <block type="variables_get" id="m5Yy:Z8R?/_{[0oe|lak">
-                    <field name="VAR" id="%w)b[:t0iEA{Kzy$1[P9">currentPrediction</field>
-                  </block>
-                </value>
-              </block>
-            </value>
           </block>
-        </next>
-      </block>
-    </statement>
-  </block>
-  <block type="during_purchase" id="DN0{Mby][)Wlv?MnuUSa" x="1298" y="60">
-    <statement name="DURING_PURCHASE_STACK">
-      <block type="controls_if" id="8,?r.z-u+7Ak0Gq)UiZ`">
-        <value name="IF0">
-          <block type="check_sell" id="w#DN|%ApuGbO1Bo3w27G"></block>
+        </value>
+        <value name="AMOUNT">
+          <block type="variables_get" id="getStakeForTrade">
+            <field name="VAR" id="stake">Stake</field>
+          </block>
+        </value>
+        <value name="PREDICTION">
+          <shadow type="math_number" id="predictionShadow">
+            <field name="NUM">0</field>
+          </shadow>
+          <block type="variables_get" id="getDiffersDigit">
+            <field name="VAR" id="differsDigit">Differs Digit</field>
+          </block>
         </value>
       </block>
     </statement>
   </block>
-  <block type="after_purchase" id="P{dtD*EpWwiE{3haPs)+" x="1298" y="292">
+  <block type="during_purchase" id="duringPurchase" collapsed="true" x="0" y="888"></block>
+  <block type="after_purchase" id="afterPurchase" x="0" y="978">
     <statement name="AFTERPURCHASE_STACK">
-      <block type="controls_if" id="XWHhO{~mg,5h$!^Ols)-">
+      <block type="controls_if" id="checkWin">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
         <value name="IF0">
-          <block type="contract_check_result" id="kl,uRoK|$xmq1*GPChah">
+          <block type="contract_check_result" id="isWin">
             <field name="CHECK_RESULT">win</field>
           </block>
         </value>
         <statement name="DO0">
-          <block type="variables_set" id="=2T)[B62b@]tTyI!q?}V">
-            <field name="VAR" id="%w)b[:t0iEA{Kzy$1[P9">currentPrediction</field>
-            <value name="VALUE">
-              <block type="math_number" id="c749%A+4@;)?)M5[Y3]J">
-                <field name="NUM">0</field>
+          <block type="math_change" id="profitChangeWin">
+            <field name="VAR" id="profit">Profit</field>
+            <value name="DELTA">
+              <block type="read_details" id="winAmount">
+                <field name="DETAIL_INDEX">4</field>
               </block>
             </value>
+            <next>
+              <block type="variables_set" id="resetStakeAfterWin">
+                <field name="VAR" id="stake">Stake</field>
+                <value name="VALUE">
+                  <block type="variables_get" id="getInitialStakeAfterWin">
+                    <field name="VAR" id="initialStake">Initial Stake</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="math_change" id="incrementTradeCountWin">
+                    <field name="VAR" id="tradeCount">Trade Count</field>
+                    <value name="DELTA">
+                      <block type="math_number" id="incrementWinValue">
+                        <field name="NUM">1</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="controls_if" id="checkProfitAfterWin">
+                        <value name="IF0">
+                          <block type="math_number_compare" id="isTargetReachedAfterWin">
+                            <field name="OP">GTE</field>
+                            <value name="A">
+                              <block type="variables_get" id="getCurrentProfitAfterWin">
+                                <field name="VAR" id="profit">Profit</field>
+                              </block>
+                            </value>
+                            <value name="B">
+                              <block type="variables_get" id="getTargetProfitAfterWin">
+                                <field name="VAR" id="targetProfit">Target Profit</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <statement name="DO0">
+                          <block type="notify" id="notifyTargetProfit">
+                            <field name="NOTIFICATION_TYPE">success</field>
+                            <field name="NOTIFICATION_SOUND">silent</field>
+                            <value name="MESSAGE">
+                              <block type="text_join" id="textTargetProfitReached">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" items="2"></mutation>
+                                <value name="ADD0">
+                                  <block type="text" id="textTargetProfitMsg">
+                                    <field name="TEXT">Target Profit Reached: Profit = </field>
+                                  </block>
+                                </value>
+                                <value name="ADD1">
+                                  <block type="variables_get" id="getCurrentProfitForTargetMsg">
+                                    <field name="VAR" id="profit">Profit</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="controls_break" id="breakTargetProfit"></block>
+                            </next>
+                          </block>
+                        </statement>
+                        <next>
+                          <block type="controls_if" id="checkTradesForReanalysisWin">
+                            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+                            <value name="IF0">
+                              <block type="math_arithmetic" id="modTradesWin">
+                                <field name="OP">MOD</field>
+                                <value name="A">
+                                  <block type="variables_get" id="getTradeCountForReanalysisWin">
+                                    <field name="VAR" id="tradeCount">Trade Count</field>
+                                  </block>
+                                </value>
+                                <value name="B">
+                                  <block type="math_number" id="reanalysisIntervalWin">
+                                    <field name="NUM">5</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <statement name="DO0">
+                              <block type="request_api" id="getStatsAfterWin">
+                                <mutation xmlns="http://www.w3.org/1999/xhtml" method="get"></mutation>
+                                <field name="API_URL">https://api.deriv.com/api/v2/bot/last_digit_stats?count=100&amp;ticks=1&amp;symbol=R_10</field>
+                                <field name="HEADERS">{}</field>
+                                <field name="BODY">{}</field>
+                                <statement name="ONSUCCESS">
+                                  <block type="variables_set" id="setLastDigitStatsAfterWin">
+                                    <field name="VAR" id="lastDigitStats">Last Digit Stats</field>
+                                    <value name="VALUE">
+                                      <block type="api_response" id="apiResponseAfterWin"></block>
+                                    </value>
+                                    <next>
+                                      <block type="procedures_callnoreturn" id="findLeastFrequentAfterWin">
+                                        <mutation name="findLeastFrequentDigit"></mutation>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </statement>
+                              </block>
+                            </statement>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
           </block>
         </statement>
-        <next>
-          <block type="trade_again" id="-h]_VB$.zP7R-A?ZwaJ7"></block>
-        </next>
-      </block>
-    </statement>
-  </block>
-  <block type="before_purchase" id="6.zWs5IA}{.5d;aI$,I3" deletable="false" x="0" y="1156">
-    <statement name="BEFOREPURCHASE_STACK">
-      <block type="purchase" id="!LnlS]pi(Os4p5ky7!HU">
-        <field name="PURCHASE_LIST">DIGITOVER</field>
-      </block>
-    </statement>
-  </block>
-</xml>
+        <statement name="ELSE">
+          <block type="math_change" id="profitChangeLoss">
+            <field name="VAR" id="profit">Profit</field>
+            <value name="DELTA">
+              <block type="math_arithmetic" id="lossAmount">
+                <field name="OP">MINUS</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </statement>
+                          </block>
+                        </xml>
